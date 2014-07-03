@@ -5,26 +5,22 @@
  */
 package gov.nasa.worldwind.render;
 
-import gov.nasa.worldwind.Configuration;
-import gov.nasa.worldwind.WorldWind;
-import gov.nasa.worldwind.avlist.AVKey;
+import android.opengl.GLES20;
 import gov.nasa.worldwind.geom.Angle;
 import gov.nasa.worldwind.geom.LatLon;
 import gov.nasa.worldwind.geom.Position;
 import gov.nasa.worldwind.globes.Globe;
+import gov.nasa.worldwind.util.BufferUtil;
 import gov.nasa.worldwind.util.Logging;
 import gov.nasa.worldwind.util.SurfaceTileDrawContext;
 
-import javax.xml.stream.XMLOutputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamWriter;
-import java.awt.*;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static android.opengl.GLES20.GL_FLOAT;
+import static android.opengl.GLES20.GL_LINE_STRIP;
+import static android.opengl.GLES20.glDrawArrays;
 
 /**
  * @author dcollins
@@ -370,7 +366,32 @@ public class SurfaceQuad extends AbstractSurfaceShape
         return geom;
     }
 
-    //**************************************************************//
+	@Override
+	protected Integer doTessellateInterior(DrawContext dc) {
+		Position refPos = this.getReferencePosition();
+		if (refPos == null)
+			return null;
+
+		for (List<LatLon> drawLocations : this.activeGeometry)
+		{
+			if (vertexBuffer == null || vertexBuffer.capacity() < 2 * drawLocations.size())
+				vertexBuffer = BufferUtil.newFloatBuffer(2 * drawLocations.size());
+			vertexBuffer.clear();
+
+			for (LatLon ll : drawLocations)
+			{
+				vertexBuffer.put((float) (ll.getLongitude().degrees - refPos.getLongitude().degrees));
+				vertexBuffer.put((float) (ll.getLatitude().degrees - refPos.getLatitude().degrees));
+			}
+			vertexBuffer.flip();
+
+			dc.getCurrentProgram().vertexAttribPointer("vertexPoint", 2, GL_FLOAT, false, 0, vertexBuffer);
+			glDrawArrays(GLES20.GL_TRIANGLE_FAN, 0, drawLocations.size());
+		}
+		return 4*8;
+	}
+
+//**************************************************************//
     //******************** Restorable State  ***********************//
     //**************************************************************//
 

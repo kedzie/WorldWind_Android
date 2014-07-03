@@ -27,6 +27,7 @@
       <excludeFolder url="file://$MODULE_DIR$/bin/generated-sources/combined-assets" />
       <excludeFolder url="file://$MODULE_DIR$/bin/generated-sources/combined-resources" />
       <excludeFolder url="file://$MODULE_DIR$/bin/generated-sources/extracted-dependencies" />
+      <excludeFolder url="file://$MODULE_DIR$/bin/maven-archiver" />
     </content>
     <orderEntry type="jdk" jdkName="Maven Android API 19 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />

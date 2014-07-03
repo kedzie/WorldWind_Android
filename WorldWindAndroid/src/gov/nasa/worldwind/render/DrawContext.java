@@ -92,24 +92,6 @@ public class DrawContext extends WWObjectImpl implements Disposable {
 
 	protected Set<String> perFrameStatisticsKeys;
 	protected Map<String, PerformanceStatistic> perFrameStatistics;
-	protected GLRuntimeCapabilities glRuntimeCaps;
-
-	public GLRuntimeCapabilities getGLRuntimeCapabilities()
-	{
-		return this.glRuntimeCaps;
-	}
-
-	public void setGLRuntimeCapabilities(GLRuntimeCapabilities capabilities)
-	{
-		if (capabilities == null)
-		{
-			String message = Logging.getMessage("nullValue.GLRuntimeCapabilitiesIsNull");
-			Logging.error(message);
-			throw new IllegalArgumentException(message);
-		}
-
-		this.glRuntimeCaps = capabilities;
-	}
 
 	/**
 	 * Initializes this <code>DrawContext</code>. This method should be called at the beginning of each frame to prepare

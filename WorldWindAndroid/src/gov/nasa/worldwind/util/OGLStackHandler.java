@@ -40,14 +40,14 @@ public class OGLStackHandler {
 
 	private static class ColorState {
 		boolean blendEnabled;
-		int []iState = new int[5];
+		int []iState = new int[6];
 		float []fState = new float[4];
 
 		ColorState save() {
 			blendEnabled = glIsEnabled(GL_BLEND);
 			glGetIntegerv(GL_BLEND_SRC_RGB, iState, 0);
-			glGetIntegerv(GL_BLEND_SRC_ALPHA, iState, 1);
-			glGetIntegerv(GL_BLEND_DST_RGB, iState, 2);
+			glGetIntegerv(GL_BLEND_DST_RGB, iState, 1);
+			glGetIntegerv(GL_BLEND_SRC_ALPHA, iState, 2);
 			glGetIntegerv(GL_BLEND_DST_ALPHA, iState, 3);
 			glGetIntegerv(GL_BLEND_EQUATION_RGB, iState, 4);
 			glGetIntegerv(GL_BLEND_EQUATION_ALPHA, iState, 5);
@@ -98,7 +98,7 @@ public class OGLStackHandler {
 
 	private static class ScissorState {
 		boolean enabled;
-		int[] box;
+		int[] box = new int[4];
 
 		ScissorState save() {
 			enabled = glIsEnabled(GL_SCISSOR_TEST);

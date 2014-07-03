@@ -6,19 +6,16 @@
 package gov.nasa.worldwind.render;
 
 import android.graphics.Point;
+import android.opengl.GLES20;
 import gov.nasa.worldwind.WorldWindowImpl;
 import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.avlist.AVList;
 import gov.nasa.worldwind.avlist.AVListImpl;
 import gov.nasa.worldwind.cache.Cacheable;
 import gov.nasa.worldwind.geom.*;
-import gov.nasa.worldwind.render.GpuTextureTile;
 import gov.nasa.worldwind.util.*;
 
 import java.util.*;
-import java.util.List;
-
-import android.opengl.GLES20;
 
 import static android.opengl.GLES20.*;
 
@@ -533,6 +530,7 @@ public class SurfaceObjectTileBuilder
 
         if (texture == null) // Create the tile's texture if it doesn't already have one.
         {
+			Logging.verbose("Creating tile texture");
             texture = this.createTileTexture(dc, tile.getWidth(), tile.getHeight());
             tile.setTexture(dc.getTextureCache(), texture);
         }
@@ -595,10 +593,13 @@ public class SurfaceObjectTileBuilder
      */
     protected GpuTexture createTileTexture(DrawContext dc, int width, int height)
     {
+		Logging.verbose(String.format("createTileTexture(%d, %d)", width, height));
         int internalFormat = this.tileTextureFormat == 0 ? DEFAULT_TEXTURE_INTERNAL_FORMAT : tileTextureFormat;
 
 		int [] textureId = new int[1];
 		glGenTextures(1, textureId, 0);
+
+		glBindTexture(GL_TEXTURE_2D, textureId[0]);
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, this.isUseLinearFilter() ?
 				(this.isUseMipmaps() ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR) : GL_NEAREST);
@@ -607,14 +608,16 @@ public class SurfaceObjectTileBuilder
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-		GpuTexture t = new GpuTexture(GL_TEXTURE_2D, textureId, width, height,
-				OGLUtil.estimateMemorySize(internalFormat, GL_UNSIGNED_BYTE, width, height, isUseMipmaps()), Matrix.fromIdentity());
-
-        t.bind();
+		glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, null);
 
 		if(isUseMipmaps()) {
 			glGenerateMipmap(textureId[0]);
 		}
+
+		glBindTexture(GL_TEXTURE_2D, 0);
+
+		GpuTexture t = new GpuTexture(GL_TEXTURE_2D, textureId, width, height,
+				OGLUtil.estimateMemorySize(internalFormat, GL_UNSIGNED_BYTE, width, height, isUseMipmaps()), Matrix.fromIdentity());
 
         return t;
     }
@@ -787,6 +790,8 @@ public class SurfaceObjectTileBuilder
             if (sectors == null)
                 continue;
 
+			if(WorldWindowImpl.DEBUG)
+				Logging.verbose(String.format("Surface object sectors: %s", sectors));
             for (Sector s : sectors)
             {
                 // Use the LevelSets tiling scheme to index the surface object's sector into the top level tiles. This
@@ -863,42 +868,53 @@ public class SurfaceObjectTileBuilder
     protected void addTileOrDescendants(DrawContext dc, LevelSet levelSet, SurfaceObjectTile parent,
         SurfaceObjectTile tile)
     {
-        // Ignore this tile if it falls completely outside the DrawContext's visible sector.
-        if (!this.intersectsVisibleSector(dc, tile))
-        {
-            // This tile is not added to the current tile list, so we clear it's object list to prepare it for use
-            // during the next frame.
-            tile.clearObjectList();
-            return;
-        }
+//		if(WorldWindowImpl.DEBUG) Logging.verbose(String.format("Checking tile %s @%s", tile, tile.getSector()));
 
-        // Ignore this tile if it falls completely outside the frustum. This may be the viewing frustum or the pick
-        // frustum, depending on the implementation.
-        if (!this.intersectsFrustum(dc, tile))
-        {
-            // This tile is not added to the current tile list, so we clear it's object list to prepare it for use
-            // during the next frame.
-            tile.clearObjectList();
-            return;
-        }
+		// Ignore this tile if it falls completely outside the DrawContext's visible sector.
+		if (!this.intersectsVisibleSector(dc, tile))
+		{
+//			if(WorldWindowImpl.DEBUG) Logging.verbose(String.format("!intersect visible sector throwing away"));
+			// This tile is not added to the current tile list, so we clear it's object list to prepare it for use
+			// during the next frame.
+			tile.clearObjectList();
+			return;
+		}
+
+        // Ignore this tile if it falls completely outside the DrawContext's visible sector.
+//        if (!this.intersectsFrustum(dc, tile))
+//        {
+//			if(WorldWindowImpl.DEBUG) Logging.verbose(String.format("!Intersect frustrum throwing away"));
+//            // This tile is not added to the current tile list, so we clear it's object list to prepare it for use
+//            // during the next frame.
+//            tile.clearObjectList();
+//            return;
+//        }
+
+//		if(WorldWindowImpl.DEBUG) Logging.verbose(String.format("Visible checking for objects"));
 
         // If the parent tile is not null, add any parent surface objects that intersect this tile.
         if (parent != null)
             this.addIntersectingObjects(dc, parent, tile);
 
         // Ignore tiles that do not intersect any surface objects.
-        if (!tile.hasObjects())
-            return;
+        if (!tile.hasObjects()) {
+//			if(WorldWindowImpl.DEBUG) Logging.verbose("!tile.hasObjects()");
+			return;
+		}
+//		if(WorldWindowImpl.DEBUG) Logging.verbose(String.format("Tile has objects: %s", tile.getObjectList()));
 
         // If this tile meets the current rendering criteria, add it to the current tile list. This tile's object list
         // is cleared after the tile update operation.
         if (this.meetsRenderCriteria(dc, levelSet, tile))
         {
-            this.addTile(tile);
+			if(WorldWindowImpl.DEBUG) Logging.verbose(String.format("Meets render criteria so adding this tile"));
+
+			this.addTile(tile);
             return;
         }
 
         Level nextLevel = levelSet.getLevel(tile.getLevelNumber() + 1);
+//		if(WorldWindowImpl.DEBUG) Logging.verbose(String.format("Splitting tile to next level: %d", nextLevel.getLevelNumber()));
         for (GpuTextureTile subTile : tile.createSubTiles(nextLevel))
         {
             this.addTileOrDescendants(dc, levelSet, tile, (SurfaceObjectTile) subTile);

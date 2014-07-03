@@ -1006,8 +1006,8 @@ public class TiledTessellator extends WWObjectImpl
 	protected boolean isExpired(DrawContext dc, TerrainTile tile) {
 		TerrainGeometry geom = tile.getGeometry(getTerrainGeometryCache());
 		if(geom==null) {
-			if(WorldWindowImpl.DEBUG)
-				Logging.verbose("Generating tile geometry for first time: " + tile);
+//			if(WorldWindowImpl.DEBUG)
+//				Logging.verbose("Generating tile geometry for first time: " + tile);
 			return true;
 		}
 		if(geom.verticalExaggeration != dc.getVerticalExaggeration()) {

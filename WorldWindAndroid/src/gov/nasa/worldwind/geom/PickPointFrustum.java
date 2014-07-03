@@ -44,7 +44,7 @@ public class PickPointFrustum extends Frustum
     // ============== Intersection Functions ======================= //
 
     /**
-     * Returns true if the specified 2D screen {@link java.awt.Rectangle} intersects the space enclosed by this view
+     * Returns true if the specified 2D screen {@link android.graphics.Rect} intersects the space enclosed by this view
      * aligned frustums screen rectangle.
      *
      * @param rect the rectangle to test

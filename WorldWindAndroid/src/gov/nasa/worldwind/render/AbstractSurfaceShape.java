@@ -6,25 +6,20 @@
 package gov.nasa.worldwind.render;
 
 import android.opengl.GLES20;
-import android.opengl.GLU;
 import gov.nasa.worldwind.Movable;
 import gov.nasa.worldwind.R;
 import gov.nasa.worldwind.WorldWindowImpl;
 import gov.nasa.worldwind.avlist.AVKey;
-import gov.nasa.worldwind.exception.WWRuntimeException;
 import gov.nasa.worldwind.geom.*;
 import gov.nasa.worldwind.globes.Globe;
-import gov.nasa.worldwind.layers.Layer;
 import gov.nasa.worldwind.util.*;
 import gov.nasa.worldwind.util.measure.AreaMeasurer;
 
 import java.nio.FloatBuffer;
 import java.util.*;
-import java.util.List;
 
-import static gov.nasa.worldwind.WorldWindowImpl.glCheckError;
 import static android.opengl.GLES20.*;
-import static gov.nasa.worldwind.util.OGLStackHandler.*;
+import static gov.nasa.worldwind.util.OGLStackHandler.GL_POLYGON_BIT;
 
 /**
  * Common superclass for surface conforming shapes such as {@link gov.nasa.worldwind.render.SurfacePolygon}, {@link
@@ -648,10 +643,10 @@ public abstract class AbstractSurfaceShape extends AbstractSurfaceObject impleme
     {
         this.determineActiveGeometry(dc, sdc);
 
-        if (this.getActiveAttributes(). isEnableInterior() && this.getActiveAttributes().getInteriorColor().a > 0)
+        if (this.getActiveAttributes(). isEnableInterior() && this.getActiveAttributes().getInteriorOpacity() > 0)
             this.drawInterior(dc, sdc);
 
-        if (this.getActiveAttributes().isEnableOutline() && this.getActiveAttributes().getOutlineColor().a > 0)
+        if (this.getActiveAttributes().isEnableOutline() && this.getActiveAttributes().getOutlineOpacity() > 0)
             this.drawOutline(dc, sdc);
     }
 
@@ -670,7 +665,7 @@ public abstract class AbstractSurfaceShape extends AbstractSurfaceObject impleme
         }
 		Matrix mvp = Matrix.fromIdentity();
 		mvp.multiplyAndSet(sdc.getProjectionMatrix(), modelview);
-		dc.getCurrentProgram().loadUniformMatrix("mvp", mvp);
+		dc.getCurrentProgram().loadUniformMatrix("mvpMatrix", mvp);
     }
 
     /** Determines which attributes -- normal, highlight or default -- to use each frame. */
@@ -1071,8 +1066,8 @@ public abstract class AbstractSurfaceShape extends AbstractSurfaceObject impleme
     protected double computeEdgeIntervalsPerDegree(SurfaceTileDrawContext sdc)
     {
         double texelsPerDegree = Math.max(
-            sdc.getViewport().width / sdc.getSector().getDeltaLonDegrees(),
-            sdc.getViewport().getHeight() / sdc.getSector().getDeltaLatDegrees());
+            sdc.getViewport().width() / sdc.getSector().getDeltaLonDegrees(),
+            sdc.getViewport().height() / sdc.getSector().getDeltaLatDegrees());
         double intervalsPerTexel = 1.0 / this.getTexelsPerEdgeInterval();
 
         return intervalsPerTexel * texelsPerDegree;
@@ -1155,7 +1150,7 @@ public abstract class AbstractSurfaceShape extends AbstractSurfaceObject impleme
         transform = Matrix.fromScale(cosLat / scale, 1d / scale, 1d).multiply(transform);
         // To maintain the pattern apparent size, we scale it so that one texture pixel match one draw tile pixel.
         double regionPixelSize = dc.getGlobe().getRadius() * sdc.getSector().getDeltaLatRadians()
-            / sdc.getViewport().height;
+            / sdc.getViewport().height();
         double texturePixelSize = dc.getGlobe().getRadius() * Angle.fromDegrees(1).radians / texture.getHeight();
         double drawScale = texturePixelSize / regionPixelSize;
         transform = Matrix.fromScale(drawScale, drawScale, 1d).multiply(transform); // Pre multiply
@@ -1272,8 +1267,7 @@ public abstract class AbstractSurfaceShape extends AbstractSurfaceObject impleme
 
         try
         {
-			return null;
-//            return this.doTessellateInterior(dc);
+            return this.doTessellateInterior(dc);
         }
         catch (OutOfMemoryError e)
         {
@@ -1283,11 +1277,50 @@ public abstract class AbstractSurfaceShape extends AbstractSurfaceObject impleme
 			//noinspection ThrowableInstanceNeverThrown
 //			throw new WWRuntimeException(message, e);
 			this.handleUnsuccessfulInteriorTessellation(dc);
-
-
             return null;
         }
     }
+
+	protected Integer doTessellateInterior(DrawContext dc) {
+		int numBytes = 0;
+
+		Position referencePos = this.getReferencePosition();
+        if (referencePos == null)
+            return null;
+
+		for (List<LatLon> drawLocations : this.getActiveGeometry())
+		{
+			if (vertexBuffer == null || vertexBuffer.capacity() < 2 * drawLocations.size())
+				vertexBuffer = BufferUtil.newFloatBuffer(2 * (drawLocations.size()+2));
+			vertexBuffer.clear();
+
+			LatLon firstPoint = drawLocations.get(0);
+
+			//calculate center and draw triangle fan all around it
+			LatLon centerPoint = LatLon.interpolate(.5f, firstPoint, drawLocations.get(drawLocations.size()/2));
+
+			vertexBuffer.put((float) (centerPoint.getLongitude().degrees - referencePos.getLongitude().degrees));
+			vertexBuffer.put((float) (centerPoint.getLatitude().degrees - referencePos.getLatitude().degrees));
+			numBytes += 2 * 8; // 3 coords of 8 bytes each
+
+			for (LatLon ll : drawLocations)
+			{
+				vertexBuffer.put((float) (ll.getLongitude().degrees - referencePos.getLongitude().degrees));
+				vertexBuffer.put((float) (ll.getLatitude().degrees - referencePos.getLatitude().degrees));
+				numBytes += 2 * 8; // 3 coords of 8 bytes each
+			}
+			//Add first point again
+			vertexBuffer.put((float) (firstPoint.getLongitude().degrees - referencePos.getLongitude().degrees));
+			vertexBuffer.put((float) (firstPoint.getLatitude().degrees - referencePos.getLatitude().degrees));
+			numBytes += 2 * 8; // 3 coords of 8 bytes each
+			vertexBuffer.flip();
+
+			dc.getCurrentProgram().vertexAttribPointer("vertexPoint", 2, GL_FLOAT, false, 0, vertexBuffer);
+			glDrawArrays(GL_TRIANGLE_FAN, 0, drawLocations.size());
+		}
+
+		return numBytes;
+	}
 
 //    protected Integer doTessellateInterior(DrawContext dc)
 //    {

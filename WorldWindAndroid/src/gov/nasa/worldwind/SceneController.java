@@ -52,7 +52,6 @@ public class SceneController extends WWObjectImpl {
 
 	protected Set<String> perFrameStatisticsKeys = new HashSet<String>();
 	protected final Map<String, PerformanceStatistic> perFrameStatistics = Collections.synchronizedMap(new ConcurrentHashMap<String, PerformanceStatistic>());
-	protected GLRuntimeCapabilities glRuntimeCaps = new GLRuntimeCapabilities();
 
 	/** Support class used to build the composite representation of surface objects as a list of SurfaceTiles. */
 	protected SurfaceObjectTileBuilder surfaceObjectTileBuilder;
@@ -270,7 +269,6 @@ public class SceneController extends WWObjectImpl {
 
 //		perFrameStatistics.clear();
 		this.surfaceObjectTiles.clear(); // Clear the surface object tiles generated during the last frame.
-		this.glRuntimeCaps.initialize();
 		// Prepare the drawing context for a new frame then cause this scene controller to draw its content. There is no
 		// need to explicitly swap the front and back buffers here, as the owner WorldWindow does this for us. In the
 		// case of WorldWindowGLSurfaceView, the GLSurfaceView automatically swaps the front and back buffers for us.
@@ -325,7 +323,6 @@ public class SceneController extends WWObjectImpl {
 	protected void initializeDrawContext(DrawContext dc, int viewportWidth, int viewportHeight) {
 		dc.initialize(viewportWidth, viewportHeight);
 		dc.setFrameTimeStamp(SystemClock.elapsedRealtime());
-		dc.setGLRuntimeCapabilities(glRuntimeCaps);
 		dc.setModel(this.model);
 		dc.setView(this.view);
 		dc.setVerticalExaggeration(this.verticalExaggeration);

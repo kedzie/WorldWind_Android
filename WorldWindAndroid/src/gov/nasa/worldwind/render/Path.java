@@ -1168,7 +1168,12 @@ public class Path extends AbstractShape {
         // each shape.
         program.enableVertexAttribute("vertexPoint");
 
-        program.loadUniform1f("uOpacity", dc.isPickingMode() ? 1f : this.layer.getOpacity());
+		double opacity = 1d;
+		if(this.layer!=null)
+			opacity = layer.getOpacity();
+		else if(dc.getCurrentLayer()!=null)
+			opacity = dc.getCurrentLayer().getOpacity();
+        program.loadUniform1f("uOpacity", dc.isPickingMode() ? 1f : opacity);
 
         // Set the OpenGL state that this shape depends on.
         GLES20.glDisable(GLES20.GL_CULL_FACE);
@@ -1268,7 +1273,7 @@ public class Path extends AbstractShape {
 		if (this.isShowPositions())
         {
             this.drawPointsVBO(dc, vboIds, pathData);
-            drawPointLabels(dc, pathData, false);
+            drawPointLabels(dc, pathData, true);
         }
 	}
 

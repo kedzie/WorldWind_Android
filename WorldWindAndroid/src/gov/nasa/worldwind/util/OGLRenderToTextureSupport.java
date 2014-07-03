@@ -6,6 +6,7 @@
 package gov.nasa.worldwind.util;
 
 import android.graphics.Rect;
+import gov.nasa.worldwind.WorldWindowImpl;
 import gov.nasa.worldwind.geom.Matrix;
 import gov.nasa.worldwind.render.Color;
 import gov.nasa.worldwind.render.DrawContext;
@@ -79,6 +80,8 @@ public class OGLRenderToTextureSupport
      */
     public void setEnableFramebufferObject(boolean enable)
     {
+		if(WorldWindowImpl.DEBUG)
+			Logging.verbose(String.format("setEnableFramebufferObject(%b)", enable));
         this.isFramebufferObjectEnabled = enable;
     }
 
@@ -221,7 +224,6 @@ public class OGLRenderToTextureSupport
             Logging.error(message);
             throw new IllegalArgumentException(message);
         }
-
         this.drawRegion.set(x, y, width, height);
 
 		projection.setOrthographic(x, x+width, y, y+height, -1, 1);
@@ -286,7 +288,6 @@ public class OGLRenderToTextureSupport
         }
 
         this.stackHandler.popAttrib();
-        this.drawRegion = null;
         this.colorTarget = null;
     }
 
@@ -348,11 +349,13 @@ public class OGLRenderToTextureSupport
 
 	protected boolean useFramebufferObject(DrawContext dc)
     {
-        return this.isEnableFramebufferObject() && dc.getGLRuntimeCapabilities().isUseFramebufferObject();
+		return isEnableFramebufferObject() && GLRuntimeCapabilities.getInstance().isUseFramebufferObject();
     }
 
     protected void beginFramebufferObjectRendering(DrawContext dc)
     {
+		if(WorldWindowImpl.DEBUG)
+			Logging.verbose("binding FrameBuffer Object");
         // Binding a framebuffer object causes all GL operations to operate on the attached textures and renderbuffers
         // (if any).
 

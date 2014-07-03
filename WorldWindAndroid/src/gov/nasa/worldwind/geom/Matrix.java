@@ -5,8 +5,7 @@
  */
 package gov.nasa.worldwind.geom;
 
-import gov.nasa.worldwind.avlist.AVList;
-import gov.nasa.worldwind.avlist.AVListImpl;
+import android.graphics.PointF;
 import gov.nasa.worldwind.terrain.Terrain;
 import gov.nasa.worldwind.util.Logging;
 
@@ -572,7 +571,7 @@ public class Matrix
 	 * @throws IllegalArgumentException if either <code>imagePoints</code> or <code>geoPoints</code> is null or have
 	 *                                  length less than 3.
 	 */
-	public static Matrix fromImageToGeographic(java.awt.geom.Point2D[] imagePoints, LatLon[] geoPoints)
+	public static Matrix fromImageToGeographic(PointF[] imagePoints, LatLon[] geoPoints)
 	{
 		if (imagePoints == null)
 		{
@@ -635,12 +634,12 @@ public class Matrix
 		double lon2 = geoPoints[1].getLongitude().degrees;
 		double lon3 = geoPoints[2].getLongitude().degrees;
 
-		double x1 = imagePoints[0].getX();
-		double x2 = imagePoints[1].getX();
-		double x3 = imagePoints[2].getX();
-		double y1 = imagePoints[0].getY();
-		double y2 = imagePoints[1].getY();
-		double y3 = imagePoints[2].getY();
+		double x1 = imagePoints[0].x;
+		double x2 = imagePoints[1].x;
+		double x3 = imagePoints[2].x;
+		double y1 = imagePoints[0].y;
+		double y2 = imagePoints[1].y;
+		double y3 = imagePoints[2].y;
 
 		double a0 = (x3 - x1) - (x2 - x1) * (y3 - y1) / (y2 - y1);
 		double a = (1 / a0) * ((lon3 - lon1) - (lon2 - lon1) * (y3 - y1) / (y2 - y1));
@@ -659,7 +658,7 @@ public class Matrix
 				0.0, 0.0, 0.0, 0.0);
 	}
 
-	public static Matrix fromGeographicToImage(java.awt.geom.Point2D[] imagePoints, LatLon[] geoPoints)
+	public static Matrix fromGeographicToImage(PointF[] imagePoints, LatLon[] geoPoints)
 	{
 		if (imagePoints == null)
 		{
@@ -722,12 +721,12 @@ public class Matrix
 		double lon2 = geoPoints[1].getLongitude().degrees;
 		double lon3 = geoPoints[2].getLongitude().degrees;
 
-		double x1 = imagePoints[0].getX();
-		double x2 = imagePoints[1].getX();
-		double x3 = imagePoints[2].getX();
-		double y1 = imagePoints[0].getY();
-		double y2 = imagePoints[1].getY();
-		double y3 = imagePoints[2].getY();
+		double x1 = imagePoints[0].x;
+		double x2 = imagePoints[1].x;
+		double x3 = imagePoints[2].x;
+		double y1 = imagePoints[0].y;
+		double y2 = imagePoints[1].y;
+		double y3 = imagePoints[2].y;
 
 		double a0 = (lon3 - lon1) - (lon2 - lon1) * (lat3 - lat1) / (lat2 - lat1);
 		double a = (1 / a0) * ((x3 - x1) - (x2 - x1) * (lat3 - lat1) / (lat2 - lat1));

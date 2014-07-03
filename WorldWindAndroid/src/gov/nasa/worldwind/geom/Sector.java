@@ -776,6 +776,9 @@ public class Sector implements Iterable<LatLon> {
 			throw new IllegalArgumentException(message);
 		}
 		Vec4[] corners = new Vec4[4];
+		for(int i=0; i<corners.length; i++) {
+			corners[i] = new Vec4();
+		}
 		this.computeCornerPoints(dc.getGlobe(), dc.getVerticalExaggeration(), corners);
 		Vec4 centerPoint = new Vec4();
 		this.computeCentroidPoint(dc.getGlobe(), dc.getVerticalExaggeration(), centerPoint);

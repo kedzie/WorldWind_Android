@@ -5,12 +5,12 @@
  */
 package gov.nasa.worldwind.util;
 
+import android.graphics.Point;
 import android.graphics.Rect;
 import gov.nasa.worldwind.geom.Extent;
 import gov.nasa.worldwind.geom.PickPointFrustum;
 import gov.nasa.worldwind.geom.Vec4;
 
-import java.awt.*;
 import java.util.ArrayList;
 
 /**
@@ -248,7 +248,7 @@ public class PickPointFrustumList extends ArrayList<PickPointFrustum>
     }
 
     /**
-     * Returns true if the specified {@link java.awt.Rectangle} intersects the 2D screen space enclosed by ALL the
+     * Returns true if the specified {@link android.graphics,Rect} intersects the 2D screen space enclosed by ALL the
      * Frustums. NOTE: Cannot be true if all frustums do not intersect.
      *
      * @param rect the Rectangle to test.
@@ -279,7 +279,7 @@ public class PickPointFrustumList extends ArrayList<PickPointFrustum>
     }
 
     /**
-     * Returns true if the specified {@link java.awt.Rectangle} intersects the 2D screen space enclosed by ANY of the
+     * Returns true if the specified {@link android.graphics.Rect} intersects the 2D screen space enclosed by ANY of the
      * Frustums.
      *
      * @param rect the Rectangle to test.

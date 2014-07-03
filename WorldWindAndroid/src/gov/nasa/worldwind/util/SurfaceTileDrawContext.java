@@ -5,11 +5,10 @@
  */
 package gov.nasa.worldwind.util;
 
+import android.graphics.Rect;
 import gov.nasa.worldwind.geom.LatLon;
 import gov.nasa.worldwind.geom.Matrix;
 import gov.nasa.worldwind.geom.Sector;
-
-import java.awt.*;
 
 /**
  * SurfaceTileDrawContext contains the context needed to render to an off-screen surface tile. SurfaceTileDrawContext is
@@ -22,7 +21,7 @@ import java.awt.*;
 public class SurfaceTileDrawContext
 {
     protected Sector sector;
-    protected Rectangle viewport;
+    protected Rect viewport;
 	protected Matrix projection;
     protected Matrix modelview;
 
@@ -36,7 +35,7 @@ public class SurfaceTileDrawContext
      * @throws IllegalArgumentException if either the sector or viewport are null, or if the viewport width or height is
      *                                  less than or equal to zero.
      */
-    public SurfaceTileDrawContext(Sector sector, Rectangle viewport, Matrix projectionMatrix)
+    public SurfaceTileDrawContext(Sector sector, Rect viewport, Matrix projectionMatrix)
     {
         if (sector == null)
         {
@@ -52,14 +51,14 @@ public class SurfaceTileDrawContext
             throw new IllegalArgumentException(message);
         }
 
-        if (viewport.width <= 0)
+        if (viewport.width() <= 0)
         {
             String message = Logging.getMessage("Geom.WidthInvalid");
             Logging.error(message);
             throw new IllegalArgumentException(message);
         }
 
-        if (viewport.height <= 0)
+        if (viewport.height() <= 0)
         {
             String message = Logging.getMessage("Geom.HeightInvalid");
             Logging.error(message);
@@ -68,8 +67,8 @@ public class SurfaceTileDrawContext
 
         this.sector = sector;
         this.viewport = viewport;
-        this.modelview = Matrix.fromGeographicToViewport(sector, viewport.x, viewport.y,
-            viewport.width, viewport.height);
+        this.modelview = Matrix.fromGeographicToViewport(sector, viewport.left, viewport.top,
+            viewport.width(), viewport.height());
 		this.projection = projectionMatrix;
     }
 
@@ -88,7 +87,7 @@ public class SurfaceTileDrawContext
      */
     public SurfaceTileDrawContext(Sector sector, int viewportWidth, int viewportHeight, Matrix projectionMatrix)
     {
-        this(sector, new Rectangle(viewportWidth, viewportHeight), projectionMatrix);
+        this(sector, new Rect(0, 0, viewportWidth, viewportHeight), projectionMatrix);
     }
 
     /**
@@ -106,7 +105,7 @@ public class SurfaceTileDrawContext
      *
      * @return the context's viewport.
      */
-    public Rectangle getViewport()
+    public Rect getViewport()
     {
         return this.viewport;
     }
