@@ -1,70 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-    Copyright (C) 2011 United States Government as represented by the Administrator of the
-    National Aeronautics and Space Administration.
-    All Rights Reserved.
--->
 
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                        android:id="@+id/drawer_layout"
+                                         android:layout_width="match_parent"
+                                         android:layout_height="match_parent">
 
-<!-- $Id: main.xml 83 2011-10-06 15:37:57Z ccrick $ -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center"
-    android:orientation="vertical" >
-
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="3"
-        android:orientation="horizontal" >
+        android:layout_height="match_parent">
 
-        <gov.nasa.worldwind.WorldWindowGLSurfaceView
+        <gov.nasa.worldwind.util.StatusBar
+            android:id="@+id/statusBar"
+            android:layout_width="match_parent"
+            android:layout_height="24dp"
+            android:layout_alignParentBottom="true"
+            android:background="@android:color/background_light"/>
+
+        <gov.nasa.worldwind.WorldWindowGLTextureView
             android:id="@+id/wwd"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:layout_above="@id/statusBar"/>
 
-    </LinearLayout>
+        <TextView android:id="@+id/perframeStatText"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_alignParentRight="true"
+                  android:layout_alignParentTop="true"
+                  android:layout_marginTop="24dp"
+                  android:layout_marginRight="24dp"
+                  android:textColor="#C8FFFFFF"
+                  android:textSize="20dp"
+                  android:fontFamily="sans-serif"/>
 
-   <LinearLayout
-        android:id="@+id/latlondisplay"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:background="@drawable/transparent_background"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:visibility="visible" >
+    </RelativeLayout>
 
-        <TextView
-            android:id="@+id/latlabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/latitude" />
+    <FrameLayout android:id="@+id/leftDrawer"
+        android:layout_width="300dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="#FF323232">
 
-        <TextView
-            android:id="@+id/latvalue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/offglobe" />
+        <fragment android:id="@+id/tocFragment"
+            android:tag="TOCFragment"
+            android:name="it.trilogis.android.ww.dialogs.TocFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 
-        <TextView
-            android:id="@+id/spacer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="15dp"
-            android:text="@string/spacer" />
+    </FrameLayout>
 
-        <TextView
-            android:id="@+id/lonlabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/longitude" />
-
-        <TextView
-            android:id="@+id/lonvalue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/offglobe" />
-    </LinearLayout>
-</LinearLayout>
+</android.support.v4.widget.DrawerLayout>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    WWAndroid Demo configuration values.
+
+    $Id: wwandroiddemo.xml 59 2011-09-20 18:41:08Z dcollins $
+-->
+<WorldWindConfiguration version="1">
+
+    <Property name="gov.nasa.worldwind.avkey.EarthElevationModelConfigFile"
+              value="config/Earth/EarthElevationModelAsBil17.xml"/>
+              <!--value="config/Earth/ScankortDenmarkDSMElevationModel.xml"/>-->
+
+
+<!--<LayerList href="config/worldwind.layers.monitor.xml"/>-->
+<!--<LayerList href="config/worldwind.layers.etc1.xml"/>-->
+    <LayerList href="config/worldwind.layers2.xml"/>
+
+    <Property name="gov.nasa.worldwind.avkey.VerticalExaggeration" value="1.0"/>
+
+    <!--The following are tuning parameters for various World Wind internals-->
+    <Property name="gov.nasa.worldwind.avkey.TaskServicePoolSize" value="4"/>
+    <Property name="gov.nasa.worldwind.avkey.TaskServiceQueueSize" value="20"/>
+    <Property name="gov.nasa.worldwind.avkey.VerticalExaggeration" value="1"/>
+    <Property name="gov.nasa.worldwind.avkey.GpuResourceCacheSize" value="1000000000"/>
+    <Property name="gov.nasa.worldwind.avkey.ElevationTileCacheSize" value="10000000"/>
+    <Property name="gov.nasa.worldwind.avkey.SectorGeometryCacheSize" value="2000000"/>
+    <Property name="gov.nasa.worldwind.avkey.SectorGeometryTileCacheSize" value="100000"/>
+    <Property name="gov.nasa.worldwind.avkey.GpuTextureTileCacheSize" value="16000000"/>
+
+ </WorldWindConfiguration>

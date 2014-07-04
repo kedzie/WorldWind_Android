@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<preference-headers xmlns:android="http://schemas.android.com/apk/res/android">
+    <header
+        android:fragment="it.trilogis.android.ww.view.SettingsActivity$PerformancePreferenceFragment"
+        android:title="Performance"
+        android:summary="Performance Preferences" />
+    <header
+        android:fragment="it.trilogis.android.ww.view.SettingsActivity$DebugPreferenceFragment"
+        android:title="Debug"
+        android:summary="Debug Preferences" />
+</preference-headers>
+    

@@ -36,7 +36,7 @@
         <dependency>
             <groupId>android</groupId>
             <artifactId>android</artifactId>
-            <version>4.4_r1</version>
+            <version>4.4.2_r3</version>
             <scope>provided</scope>
             <exclusions>
                 <exclusion>
@@ -44,6 +44,11 @@
                     <artifactId>commons-logging</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>android.support</groupId>
+            <artifactId>compatibility-v4</artifactId>
+            <version>19.0.1</version>
         </dependency>
         <dependency>
             <groupId>com.github.trilogisit.worldwindandroid</groupId>
@@ -67,4 +72,11 @@
             </plugin>
         </plugins>
     </build>
+
+    <repositories>
+        <repository>
+            <id>third.party.closed.source.repo</id>
+            <url>file://${basedir}/../maven_repo_3rd_party</url>
+        </repository>
+    </repositories>
 </project>

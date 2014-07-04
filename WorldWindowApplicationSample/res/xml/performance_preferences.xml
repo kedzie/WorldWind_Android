@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+<PreferenceCategory android:title="Performance" >
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="elevation"
+        android:summary="Enable Elevation"
+        android:title="Enable Elevation"/>
+
+    <EditTextPreference
+        android:defaultValue="1"
+        android:key="verticalExaggeration"
+        android:summary="Vertical Exaggeration: 1.0"
+        android:title="Vertical Exaggeration"
+        android:singleLine="true"
+        android:inputType="numberDecimal"/>
+
+    <EditTextPreference
+        android:defaultValue="0.5"
+        android:key="farDistance"
+        android:summary="Horizon Multiplier: 0.5"
+        android:title="Horizon Multiplier"
+        android:singleLine="true"
+        android:inputType="numberDecimal"/>
+
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="detectCollisions"
+        android:summary="Enable View Collision Detection"
+        android:title="Enable Collision Detection"/>
+
+</PreferenceCategory>
+
+</PreferenceScreen>

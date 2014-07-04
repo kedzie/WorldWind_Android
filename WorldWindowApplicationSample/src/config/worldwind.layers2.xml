@@ -7,30 +7,32 @@
 <LayerList>
     <Layer
         className="gov.nasa.worldwind.layers.SkyGradientLayer"
-        title="Sky" />
-    <Layer className="gov.nasa.worldwind.layers.Earth.BMNGOneImage" >
+        title="Sky"/>
+    <Layer className="gov.nasa.worldwind.layers.Earth.BMNGOneImage">
         <!-- Individual properties can be specified within Layer entries, like this: -->
         <Property
             name="MinActiveAltitude"
-            value="3e5" />
+            value="3e5"/>
     </Layer>
     <Layer
-        actuate="onLoad"
-        href="config/Earth/BMNGWMSLayerPNG.xml" />
+        actuate="onRequest"
+        href="config/etc1/BMNGWMSLayer.xml"/>
     <Layer
-        actuate="onLoad"
-        href="config/Earth/LandsatI3WMSLayerPNG.xml" />
-    <!-- <Layer href="config/Earth/MSVirtualEarthAerialLayer.xml" actuate="onLoad"/> -->
+        actuate="onRequest"
+        href="config/etc1/LandsatI3WMSLayer.xml"/>
+
+    <Layer actuate="onLoad" href="config/etc1/ScankortDenmarkImageLayer.xml"/>
+
     <Layer
         actuate="onLoad"
         className="gov.nasa.worldwind.layers.WorldMapLayer"
-        title="World Map" />
+        title="World Map"/>
     <Layer
         actuate="onLoad"
         className="gov.nasa.worldwind.layers.CompassLayer"
-        title="Compass" />
+        title="Compass"/>
     <Layer
         actuate="onLoad"
         className="gov.nasa.worldwind.layers.ScalebarLayer"
-        title="Scale Bar" />
+        title="Scale Bar"/>
 </LayerList>

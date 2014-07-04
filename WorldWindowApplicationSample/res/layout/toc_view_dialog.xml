@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tlv="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <it.trilogis.android.ww.view.DragListView
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tlv="http://schemas.android.com/apk/res/it.trilogis.android.ww"
         android:id="@android:id/list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentTop="false"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:drawSelectorOnTop="false"
         tlv:grabber="@+id/toc_item_grabber"
         tlv:grabber_alignment="right"
@@ -19,13 +19,41 @@
 
     <ImageView
         android:id="@+id/removeView"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal"
         android:contentDescription="@string/toc_view_delete_content_description"
         android:src="@android:drawable/ic_delete"
         android:visibility="invisible" >
     </ImageView>
 
-</RelativeLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:textColor="@android:color/primary_text_dark"
+            android:text="Vert. Exag:"/>
+
+        <Button
+            android:id="@+id/lowerButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Lower"/>
+
+        <Button
+            android:id="@+id/raiseButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Raise"/>
+
+    </LinearLayout>
+
+
+
+</LinearLayout>

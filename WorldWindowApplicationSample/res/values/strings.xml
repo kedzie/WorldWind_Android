@@ -7,8 +7,8 @@
     $Id: strings.xml 83 2011-10-06 15:37:57Z ccrick $
 -->
 <resources>
-    <string name="app_name">WorldDroid³</string>
-    <string name="main_activity_name">WorldDroid³</string>
+    <string name="app_name">WorldWind Sample</string>
+    <string name="main_activity_name">WorldWind Sample</string>
     <string name="dashboard">Dashboard</string>
     <string name="latitude">Latitude:</string>
     <string name="longitude">Longitude:</string>
@@ -23,4 +23,7 @@
     <string name="toc_default_checkbox_text">&#8230;</string>
     <string name="toc_drag_icon_content_description">Drag Item</string>
     <string name="toc_view_delete_content_description">Delete Layer</string>
+
+    <string name="drawer_open">Open TOC Drawer</string>
+    <string name="drawer_close">Close TOC Drawer</string>
 </resources>
